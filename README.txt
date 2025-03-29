@@ -18,3 +18,8 @@ Features:
 - Tray icon toggle & exit
 - Cooldown & debounce protection
 - Real-time logs and debugging output in terminal
+
+How to install: 
+1. Go to dist -> Output -> Double click Auto_Resolution_Installer
+2. Double-click
+3. Enjoy!
