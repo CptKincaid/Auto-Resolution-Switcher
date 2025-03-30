@@ -56,18 +56,19 @@ def check_fullscreen():
     while True:
         if AUTO_MODE:
             fg_window = win32gui.GetForegroundWindow()
-            retry_attempts = 2
+            retry_attempts = 5
             for attempt in range(retry_attempts):
                 try:
                     rect = win32gui.GetWindowRect(fg_window)
                     break
                 except win32gui.error as e:
                     print(f"[Retry {attempt+1}] Could not get window rect: {e}")
-                    time.sleep(0.2)
+                    time.sleep(0.3)
             else:
-                print("[Error] Skipping fullscreen check after multiple failures")
+                print("[Warning] Skipping fullscreen check after multiple failures")
                 time.sleep(COOLDOWN)
                 continue
+
 
             monitor = win32api.MonitorFromWindow(fg_window)
             monitor_info = win32api.GetMonitorInfo(monitor)
@@ -92,7 +93,9 @@ def check_fullscreen():
 def toggle_auto(icon, item):
     global AUTO_MODE
     AUTO_MODE = not AUTO_MODE
-    print(f"[Toggle] Auto Mode: {'ON' if AUTO_MODE else 'OFF'}")
+    source = "[Tray]" if icon else "[Hotkey]"
+    print(f"{source} Ctrl+F3 - Toggled Auto Mode: {'ON' if AUTO_MODE else 'OFF'}")
+
 
 def exit_app(icon, item):
     print("[Exit] App is closing.")
@@ -113,7 +116,7 @@ def start_tray():
 def start_hotkeys():
     keyboard.add_hotkey('ctrl+f1', lambda: (disable_auto(), print("[Hotkey] Ctrl+F1 - Force 4K"), switch_to_4k()))
     keyboard.add_hotkey('ctrl+f2', lambda: (disable_auto(), print("[Hotkey] Ctrl+F2 - Force 1080p"), switch_to_1080p()))
-    keyboard.add_hotkey('ctrl+f3', lambda: (print("[Hotkey] Ctrl+F3 - Re-enable Auto Mode"), enable_auto()))
+    keyboard.add_hotkey('ctrl+f3', lambda: (toggle_auto(None, None), print(f"[Hotkey] Ctrl+F3 - Toggled Auto Mode: {'ON' if AUTO_MODE else 'OFF'}")))
     keyboard.add_hotkey('ctrl+f4', lambda: (print("[Hotkey] Ctrl+F4 - Emergency Kill"), sys.exit()))
     keyboard.wait()
 
